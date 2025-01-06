@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite';
-import { glob } from 'glob';
+import glob from 'glob'; // Оновлений імпорт
 import injectHTML from 'vite-plugin-html-inject';
 import FullReload from 'vite-plugin-full-reload';
 import SortCss from 'postcss-sort-media-queries';
@@ -15,7 +15,7 @@ export default defineConfig(({ command }) => {
     build: {
       sourcemap: true,
       rollupOptions: {
-        input: glob.sync('./src/*.html'),
+        input: glob.sync('./src/*.html'), // Використання glob для HTML
         output: {
           manualChunks(id) {
             if (id.includes('node_modules')) {
@@ -82,14 +82,9 @@ export default defineConfig(({ command }) => {
                 const base64Data = data.image.replace(/^data:image\/\w+;base64,/, '');
                 const buffer = Buffer.from(base64Data, 'base64');
                 
-                // Создаем уникальное имя файла
                 const fileName = `image-${Date.now()}-${Math.random().toString(36).substr(2, 9)}.png`;
                 const filePath = path.resolve(__dirname, 'src/img/editor-images', fileName);
-                
-                // Создаем папку, если её нет
                 await fs.mkdir(path.resolve(__dirname, 'src/img/editor-images'), { recursive: true });
-                
-                // Сохраняем файл
                 await fs.writeFile(filePath, buffer);
                 
                 res.statusCode = 200;
@@ -109,7 +104,6 @@ export default defineConfig(({ command }) => {
               const imagesDir = path.join(process.cwd(), 'src', 'img', 'editor-images');
               const files = await fs.readdir(imagesDir);
               
-              // Формируем список изображений
               const images = files
                 .filter(file => /\.(jpg|jpeg|png|gif|jfif)$/i.test(file))
                 .map(file => ({
@@ -117,7 +111,6 @@ export default defineConfig(({ command }) => {
                   path: `./img/editor-images/${file}`
                 }));
 
-              // Отправляем только JSON
               res.writeHead(200, {
                 'Content-Type': 'application/json',
                 'Cache-Control': 'no-cache',
